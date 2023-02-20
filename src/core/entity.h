@@ -2,11 +2,16 @@
 #define ENTITY_H
 
 #include <vector>
+#include "component.h"
 
 class Entity {
-public:
-    // Array of component references
-    std::vector<Component*> components;
-};
+    public:
+        std::vector<Component*> components;
+            
+        template<typename T>
+        void addComponent(T* component) {
+            components.push_back(component);
+        }
 
+    };
 #endif

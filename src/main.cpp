@@ -6,38 +6,49 @@
 #include "core/entity.h"
 #include "core/system.h"
 
-#include "components/RenderableComponent.h"
-#include "components/PositionComponent.h"
+#include "components/collider.h"
+#include "components/controller.h"
+#include "components/renderable.h"
+#include "components/transform2D.h"
+#include "components/velocity.h"
 
-#include "systems/RenderingSystem.h"
+#include "systems/input.h"
+#include "systems/physics.h"
+#include "systems/rendering.h"
 
-// Define the maximum number of entities in the game
-const int MAX_ENTITIES = 100;
+#include "entities/player.h"
+
+#include "main.h"
 
 int main() {
     // Create the Raylib window
-    const int screenWidth = 640;
-    const int screenHeight = 400;
-    InitWindow(screenWidth, screenHeight, "Entity-Component-System with Raylib");
+    InitWindow(WIN_WIDTH, WIN_HEIGHT, "Entity-Component-System with Raylib");
 
     // Create the entities
-    Entity* entity1 = new Entity();
-    entity1->components.push_back(new PositionComponent(100, 100));
-    entity1->components.push_back(new RenderableComponent(LoadTexture("resources/enemy.png")));
+    Entity* entity1 = new Player(100,100,LoadTexture("resources/player.png"));
 
     Entity* entity2 = new Entity();
-    entity2->components.push_back(new PositionComponent(400, 200));
-    entity2->components.push_back(new RenderableComponent(LoadTexture("resources/player.png")));
+    entity2->addComponent(new Transform2D(400,200,64,32,0));
+    entity2->addComponent(new Renderable(LoadTexture("resources/enemy.png")));
 
     // Create the RenderingSystem and add the entities to it
-    RenderingSystem renderingSystem;
+    Rendering renderingSystem;
     renderingSystem.addEntity(entity1);
     renderingSystem.addEntity(entity2);
+
+    Input inputSystem;
+    inputSystem.addEntity(entity1);
+
+    Physics physicsSystem;
+    physicsSystem.addEntity(entity1);
+    physicsSystem.addEntity(entity2);
 
     // Run the game loop
     const float deltaTime = 1.0f / 60.0f;
     while (!WindowShouldClose()) {
         // Update the systems
+        inputSystem.update(deltaTime);
+        physicsSystem.update(deltaTime);
         renderingSystem.update(deltaTime);
     }
 

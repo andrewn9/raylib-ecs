@@ -13,7 +13,7 @@ CFLAGS = -O2 -Wall -Wno-missing-braces -I$(INC_DIR)
 LDFLAGS = -L$(LIB_DIR) -lraylib -lopengl32 -lgdi32 -lwinmm
 
 # Source files
-SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+SRCS = $(shell find $(SRC_DIR) -type f -name "*.cpp")
 
 # Output executable
 EXE = $(EXE_DIR)/$(EXE_NAME)
