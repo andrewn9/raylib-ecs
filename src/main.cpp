@@ -17,59 +17,38 @@
 #include "systems/rendering.h"
 
 #include "entities/player.h"
+#include "entities/wall.h"
 
 #include "main.h"
 
 int main() {
     // Create the Raylib window
-    InitWindow(WIN_WIDTH, WIN_HEIGHT, "Entity-Component-System with Raylib");
+    InitWindow(WIN_WIDTH, WIN_HEIGHT, "sick iwndow");
+    SetWindowIcon(LoadImage("resources/player.png"));
+    SetTargetFPS(MAX_FPS);
 
     // Create the entities
-    Entity* entity1 = new Player(Vector2{100,100},LoadTexture("resources/player.png"));
-
-    //  Entity* entity1 = new Entity();
-    //  entity1->addComponent(new Transform2D(Vector2{400,150},Vector2{32,32},0));
-    //  entity1->addComponent(new Renderable(LoadTexture("resources/enemy.png")));
-    //  entity1->addComponent(new Collider(Vector2{400,150},Vector2{32,32}));
-    //  entity1->addComponent(new Velocity(Vector2{0,5}));
-
-    Entity* entity2 = new Entity();
-    entity2->addComponent(new Transform2D(Vector2{400,200},Vector2{32,32},0));
-    entity2->addComponent(new Renderable(LoadTexture("resources/enemy.png")));
-    entity2->addComponent(new Collider(Vector2{400,200},Vector2{32,32},true,0));
-    entity2->addComponent(new Velocity(Vector2{0,0}));
-
-    Entity* entity3 = new Entity();
-    entity3->addComponent(new Transform2D(Vector2{432,200},Vector2{32,32},0));
-    entity3->addComponent(new Renderable(LoadTexture("resources/enemy.png")));
-    entity3->addComponent(new Collider(Vector2{432,200},Vector2{32,32},true,0));
-    entity3->addComponent(new Velocity(Vector2{0,0}));
-
-    Entity* entity4 = new Entity();
-    entity4->addComponent(new Transform2D(Vector2{432,232},Vector2{32,32},0));
-    entity4->addComponent(new Renderable(LoadTexture("resources/enemy.png")));
-    entity4->addComponent(new Collider(Vector2{432,232},Vector2{32,32},true,0));
-    entity4->addComponent(new Velocity(Vector2{0,0}));
+    Entity* player = new Player(Vector2{0,0},Vector2{32,32},LoadTexture("resources/player.png"));
+    Entity* wall1 = new Wall(Vector2{250,250},Vector2{150,150},LoadTexture("resources/wall.png"));
+    Entity* wall2 = new Wall(Vector2{300,100},Vector2{32,32},LoadTexture("resources/wall.png"));
 
     // Create the RenderingSystem and add the entities to it
     Rendering renderingSystem;
-    renderingSystem.addEntity(entity1);
-    renderingSystem.addEntity(entity2);
-    renderingSystem.addEntity(entity3);
-    renderingSystem.addEntity(entity4);
+    renderingSystem.addEntity(player);
+    renderingSystem.addEntity(wall1);
+    renderingSystem.addEntity(wall2);
 
     Input inputSystem;
-    inputSystem.addEntity(entity1);
+    inputSystem.addEntity(player);
 
     Physics physicsSystem;
-    physicsSystem.addEntity(entity1);
-    physicsSystem.addEntity(entity2);
-    physicsSystem.addEntity(entity3);
-    physicsSystem.addEntity(entity4);
+    physicsSystem.addEntity(player);
+    physicsSystem.addEntity(wall1);
+    physicsSystem.addEntity(wall2);
 
     // Run the game loop
-    const float deltaTime = 1.0f / 240.0f;
     while (!WindowShouldClose()) {
+        float deltaTime = GetFrameTime();
         // Update the systems
         inputSystem.update(deltaTime);
         physicsSystem.update(deltaTime);
@@ -77,7 +56,7 @@ int main() {
     }
 
     // Clean up the entities
-    for (Entity* entity : { entity1, entity2 }) {
+    for (Entity* entity : { player, wall1}) {
         for (Component* component : entity->components) {
             delete component;
         }

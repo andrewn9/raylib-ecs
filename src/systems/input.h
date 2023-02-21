@@ -39,10 +39,12 @@ public:
             if(IsKeyDown(KEY_RIGHT))
                 moveVector.x++;
 
+            if(Vector2Length(moveVector) == 0)
+                continue;
+                
             Vector2 normalVector = Vector2Normalize(moveVector);
             normalVector = Vector2Scale(normalVector,controller->moveSpeed);
             velocity->velocity = normalVector;
-
         }
     }
 };

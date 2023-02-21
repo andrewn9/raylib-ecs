@@ -11,14 +11,7 @@
 
 class Player : public Entity {
     public:
-        Player(Vector2 pos, Texture2D texture);
-
-    private:
-        Collider* collider;
-        Controller* controller;
-        Renderable* renderable;
-        Transform2D* transform;
-        Velocity* velocity;
+        Player(Vector2 pos, Vector2 size, Texture2D texture);
 };
 
 #endif
