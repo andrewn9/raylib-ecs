@@ -76,8 +76,8 @@ public:
                     if(x_overlap > 0)
                     {
                         // Calculate half extents along x axis for each object 
-                        a_extent = (a_max.y - a_min.y) / 2;
-                        b_extent = (b_max.y - b_min.y) / 2;
+                        float a_extent = (a_max.y - a_min.y) / 2;
+                        float b_extent = (b_max.y - b_min.y) / 2;
                     
                         // Calculate overlap on y axis 
                         float y_overlap = a_extent + b_extent - abs(n.y);
@@ -85,6 +85,8 @@ public:
                         // SAT test on y axis 
                         if(y_overlap > 0)
                         {
+                            printf("x_overlap %f", x_overlap);
+                            printf("y_overlap %f\n\n", y_overlap);
                             // Find out which axis is axis of least penetration 
                             if(x_overlap > y_overlap)
                             {
@@ -115,7 +117,8 @@ public:
         }
     }
     void ResolveCollision(Entity* a, Entity*b, Vector2 normal, float penetration)
-    {
+    {   
+
         Velocity* velocityA = getComponent<Velocity>(a);
         Collider* colliderA = getComponent<Collider>(a);
     
@@ -124,25 +127,30 @@ public:
 
         // Calculate relative velocity 
         Vector2 rv = Vector2Subtract(velocityB->velocity, velocityA->velocity);
+        
+        printf("normalx%f, normaly%f\n", normal.x, normal.y);
+        // printf("relativex%f, relativey%f\n", rv.x, rv.y);
 
         // Calculate relative velocity in terms of the normal direction 
         float velAlongNormal = Vector2DotProduct(rv,normal);
-
+        //printf("%f\n",velAlongNormal);
         // // Do not resolve if velocities are separating 
         if(velAlongNormal>0)
-            return;
-            
+             return;
+        
+
         // // Calculate restitution 
-        float e = std::min(0.5,0.5);
+        float e = 0.5;
 
         float aMass = colliderA->size.x * colliderA->size.y;
         float bMass = colliderB->size.x * colliderB->size.y;
 
         // // Calculate impulse scalar 
-        float j = -(1+e) * velAlongNormal;
-        j/= 1 / aMass + 1 / bMass;
+        float j = -(1.0+e) * velAlongNormal;
+        j/= 1.0 / aMass + 1.0 / bMass;
 
         // // Apply impulse 
+
         Vector2 impulse = Vector2Scale(normal,j);
         
         Vector2 da = Vector2Scale(impulse,1/aMass);

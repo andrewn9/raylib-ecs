@@ -27,10 +27,16 @@ int main() {
     // Create the entities
     Entity* entity1 = new Player(Vector2{100,100},LoadTexture("resources/player.png"));
 
+    // Entity* entity1 = new Entity();
+    // entity1->addComponent(new Transform2D(Vector2{200,200},Vector2{32,32},0));
+    // entity1->addComponent(new Renderable(LoadTexture("resources/enemy.png")));
+    // entity1->addComponent(new Collider(Vector2{200,200},Vector2{32,32}));
+    // entity1->addComponent(new Velocity(Vector2{5,0}));
+
     Entity* entity2 = new Entity();
-    entity2->addComponent(new Transform2D(Vector2{400,200},Vector2{64,32},0));
+    entity2->addComponent(new Transform2D(Vector2{400,200},Vector2{32,32},0));
     entity2->addComponent(new Renderable(LoadTexture("resources/enemy.png")));
-    entity2->addComponent(new Collider(Vector2{400,200},Vector2{64,32}));
+    entity2->addComponent(new Collider(Vector2{400,200},Vector2{32,32}));
     entity2->addComponent(new Velocity(Vector2{-1,0}));
 
     // Create the RenderingSystem and add the entities to it
