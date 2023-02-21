@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "raylib.hpp"
 #include "../core/entity.h"
 #include "../components/collider.h"
 #include "../components/controller.h"
@@ -10,7 +11,7 @@
 
 class Player : public Entity {
     public:
-        Player(float x, float y, Texture2D texture);
+        Player(Vector2 pos, Texture2D texture);
 
     private:
         Collider* collider;

@@ -2,6 +2,7 @@
 #define CONTROLLER_H
 
 #include "../core/component.h"
+#include "raylib.hpp"
 
 class Controller : public Component {
 public:

@@ -2,19 +2,17 @@
 #define COLLIDER_H
 
 #include "../core/component.h"
+#include "raylib.hpp"
 
 class Collider : public Component {
     public:
-        float x;
-        float y;
-
-        float width;
-        float height;
+        Vector2 position;
+        Vector2 size;
 
         bool isSolid;
 
-        Collider(float x_, float y_,float width_, float height_, bool isSolid_ = true)
-            : x(x_), y(y_), width(width_), height(height_), isSolid(isSolid_) {}
+        Collider(Vector2 position_, Vector2 size_, bool isSolid_ = true)
+            : position(position_), size(size_), isSolid(isSolid_) {}
 };
 
 #endif

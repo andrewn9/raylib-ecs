@@ -2,9 +2,8 @@
 #define COMPONENT_H
 
 class Component {
-public:
-    // Deconstructor
-    virtual ~Component() {}
-};
-
+    public:
+        // Deconstructor
+        virtual ~Component() {}
+    };
 #endif

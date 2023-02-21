@@ -2,17 +2,16 @@
 #define TRANSFORM2D_H
 
 #include "../core/component.h"
+#include "raylib.hpp"
 
 class Transform2D : public Component {
     public:
-        float x;
-        float y;
-
-        float width;
-        float height;
+        Vector2 position;
+        Vector2 size;
 
         float rotation;
 
-        Transform2D(float x_, float y_, float width_, float height_, float rotation_) : x(x_), y(y_), width(width_), height(height_), rotation(rotation_) {}
+        Transform2D(Vector2 position_, Vector2 size_, float rotation_) :position(position_), size(size_), rotation(rotation_) {}
 };
+
 #endif

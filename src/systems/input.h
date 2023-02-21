@@ -4,7 +4,6 @@
 #include "../core/system.h"
 #include "raymath.hpp"
 
-
 #include "../core/system.h"
 #include "../components/collider.h"
 #include "../components/controller.h"
@@ -15,6 +14,7 @@ class Input : public System {
 
 public:
     void update(float deltaTime) {
+        // Loop through all entities
         for (auto& entity : entities) {
             
             Transform2D* transform = getComponent<Transform2D>(entity);
@@ -22,38 +22,26 @@ public:
             Collider* collider = getComponent<Collider>(entity);
             Controller* controller = getComponent<Controller>(entity);
 
+            // Skip entity if missing any components
             if(!transform || !velocity || !collider || !controller)
             {
                 continue;
             }
 
-            float dx = 0;
-            float dy = 0;
+            Vector2 moveVector = Vector2{0,0};
 
             if(IsKeyDown(KEY_UP))
-            {
-                dy--;
-            }
-            
+                moveVector.y--;
             if(IsKeyDown(KEY_DOWN))
-            {
-                dy++;
-            }
-            
+                moveVector.y++;
             if(IsKeyDown(KEY_LEFT))
-            {
-                dx--;
-            }
-            
+                moveVector.x--;
             if(IsKeyDown(KEY_RIGHT))
-            {
-                dx++;
-            }
+                moveVector.x++;
 
-            Vector2 normalVector = Vector2Normalize(Vector2{dx,dy});
+            Vector2 normalVector = Vector2Normalize(moveVector);
             normalVector = Vector2Scale(normalVector,controller->moveSpeed);
-            velocity->x = normalVector.x;
-            velocity->y = normalVector.y;
+            velocity->velocity = normalVector;
 
         }
     }

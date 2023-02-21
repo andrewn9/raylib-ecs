@@ -2,14 +2,12 @@
 #define VELOCITY_H
 
 #include "../core/component.h"
+#include "raylib.hpp"
 
 class Velocity : public Component {
     public:
-        float x;
-        float y;
-
-        Velocity(float x_, float y_)
-            : x(x_), y(y_) {}
+        Vector2 velocity;
+        Velocity(Vector2 velocity_) : velocity(velocity_) {}
 };
 
 #endif
