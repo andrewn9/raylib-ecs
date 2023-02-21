@@ -10,9 +10,10 @@ class Collider : public Component {
         Vector2 size;
 
         bool isSolid;
+        float density;
 
-        Collider(Vector2 position_, Vector2 size_, bool isSolid_ = true)
-            : position(position_), size(size_), isSolid(isSolid_) {}
+        Collider(Vector2 position_, Vector2 size_, bool isSolid_ = true, float density_ = 1)
+            : position(position_), size(size_), isSolid(isSolid_) , density(density_){}
 };
 
 #endif

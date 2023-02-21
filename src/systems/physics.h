@@ -33,7 +33,6 @@ public:
             for(auto& entityB : entities)
             {
                 Transform2D* transformB = getComponent<Transform2D>(entityB);
-                Velocity* velocityB = getComponent<Velocity>(entityB);
                 Collider* colliderB = getComponent<Collider>(entityB);
 
                 if((entityA == entityB)||!transformB || !colliderB)
@@ -43,7 +42,7 @@ public:
                 {    
                     
                     // // Vector from A to B
-                    Vector2 n = Vector2Subtract(velocityB->velocity,velocityA->velocity);
+                    Vector2 n = Vector2Subtract(colliderB->position,colliderA->position);
 
                     /**
                      *      min_____________________
@@ -85,16 +84,14 @@ public:
                         // SAT test on y axis 
                         if(y_overlap > 0)
                         {
-                            printf("x_overlap %f", x_overlap);
-                            printf("y_overlap %f\n\n", y_overlap);
                             // Find out which axis is axis of least penetration 
-                            if(x_overlap > y_overlap)
+                            if(x_overlap < y_overlap)
                             {
                                 // Point towards B knowing that n points from A to B 
                                 if(n.x < 0)
                                     normal = Vector2{-1, 0};
                                 else
-                                    normal = Vector2{0, 0};
+                                    normal = Vector2{1, 0};
                                 penetration = x_overlap;
                                 ResolveCollision(entityA,entityB, normal, penetration);
                             }
@@ -104,7 +101,7 @@ public:
                                 if(n.y < 0)
                                     normal = Vector2{ 0, -1};
                                 else
-                                    normal = Vector2{ 0, 1 };
+                                    normal = Vector2{ 0, 1};
                                 penetration = y_overlap;
                                 ResolveCollision(entityA,entityB, normal, penetration);
                             }
@@ -127,27 +124,27 @@ public:
 
         // Calculate relative velocity 
         Vector2 rv = Vector2Subtract(velocityB->velocity, velocityA->velocity);
-        
-        printf("normalx%f, normaly%f\n", normal.x, normal.y);
-        // printf("relativex%f, relativey%f\n", rv.x, rv.y);
 
         // Calculate relative velocity in terms of the normal direction 
         float velAlongNormal = Vector2DotProduct(rv,normal);
-        //printf("%f\n",velAlongNormal);
+
         // // Do not resolve if velocities are separating 
         if(velAlongNormal>0)
              return;
         
 
         // // Calculate restitution 
-        float e = 0.5;
+        float e = 0;
 
-        float aMass = colliderA->size.x * colliderA->size.y;
-        float bMass = colliderB->size.x * colliderB->size.y;
+        float aMass = (colliderA->size.x * colliderA->size.y) * colliderA->density;
+        float bMass = (colliderB->size.x * colliderB->size.y) * colliderB->density;
+
+        float a_invMass = colliderA->density == 0.0f ? 0 : 1/aMass;
+        float b_invMass = colliderB->density == 0.0f ? 0 : 1/bMass;
 
         // // Calculate impulse scalar 
         float j = -(1.0+e) * velAlongNormal;
-        j/= 1.0 / aMass + 1.0 / bMass;
+        j/= a_invMass + b_invMass;
 
         // // Apply impulse 
 
@@ -156,8 +153,10 @@ public:
         Vector2 da = Vector2Scale(impulse,1/aMass);
         Vector2 db = Vector2Scale(impulse,1/bMass);
 
-        velocityA->velocity = Vector2Subtract(velocityA->velocity, da);
-        velocityB->velocity = Vector2Add(velocityB->velocity, db);
+        if(a_invMass > 0)
+            velocityA->velocity = Vector2Subtract(velocityA->velocity, da);
+        if(b_invMass > 0)
+            velocityB->velocity = Vector2Add(velocityB->velocity, db);
     }
 
     bool rectsColliding(Collider* rect1Collider, Collider* rect2Collider)
