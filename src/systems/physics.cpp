@@ -30,9 +30,7 @@ void Physics::update(float deltaTime){
 
             // If colliders are in bounds of each other
             if(AABB(colliderA,colliderB))
-            {    
-                printf("%s\n","colliding");
-                
+            {        
                 // // Vector from A to B
                 Vector2 n = Vector2Subtract(colliderB->position,colliderA->position);
 
@@ -117,7 +115,7 @@ void Physics::resolveCollision(Entity* a, Entity*b, Vector2 normal, float penetr
 
     // // Do not resolve if velocities are separating 
     if(velAlongNormal>0)
-            return;
+        return;
     
 
     // // Calculate restitution 
@@ -139,18 +137,20 @@ void Physics::resolveCollision(Entity* a, Entity*b, Vector2 normal, float penetr
     Vector2 da = Vector2Scale(impulse,1/aMass);
     Vector2 db = Vector2Scale(impulse,1/bMass);
 
+    printf("x%f, y%f", normal.x, normal.y);
     // Only affect the entity if it has mass, ie. not a wall
     if(a_invMass > 0)
         velocityA = Vector2Subtract(velocityA, da);
     if(b_invMass > 0)
         velocityB = Vector2Add(velocityB, db);
 
-    // Apply positional correction
-    Vector2 correction = Vector2Scale(n, (fmaxf(penetration - SLOP, 0.0f) / (a_invMass + b_invMass)) * PEN_REDUX);
-    transformA->position =  Vector2Subtract(colliderA->position, Vector2Scale(correction, a_invMass));
-    transformB->position =  Vector2Add(colliderB->position, Vector2Scale(correction, b_invMass));
-    colliderA->position = transformA->position;
-    colliderB->position = transformB->position;
+    
+    colliderA->position = Vector2Add(colliderA->position,Vector2Scale(normal,-penetration/2));
+    transformA->position = colliderA->position;
+
+    colliderB->position = Vector2Add(colliderB->position,Vector2Scale(normal,penetration/2));
+    transformB->position = colliderB->position;
+
 }
 
 bool Physics::AABB(Collider* colliderA, Collider* colliderB)

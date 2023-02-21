@@ -13,10 +13,9 @@
 // Constants
 
 // Percent to reduce penetration depth after applying a collision impulse
-#define PEN_REDUX       0.01f
-
+#define PEN_REDUX       0.2f
 // Threshold to prevent jitter
-#define SLOP            0.3f
+#define SLOP            0.01f
 
 class Physics : public System {
 public:

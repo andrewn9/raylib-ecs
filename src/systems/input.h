@@ -41,10 +41,10 @@ public:
 
             if(Vector2Length(moveVector) == 0)
                 continue;
-                
+
             Vector2 normalVector = Vector2Normalize(moveVector);
             normalVector = Vector2Scale(normalVector,controller->moveSpeed);
-            velocity->velocity = normalVector;
+            velocity->velocity = Vector2Add(velocity->velocity,normalVector);
         }
     }
 };

@@ -30,13 +30,20 @@ int main() {
     // Create the entities
     Entity* player = new Player(Vector2{0,0},Vector2{32,32},LoadTexture("resources/player.png"));
     Entity* wall1 = new Wall(Vector2{250,250},Vector2{150,150},LoadTexture("resources/wall.png"));
-    Entity* wall2 = new Wall(Vector2{300,100},Vector2{32,32},LoadTexture("resources/wall.png"));
+    Entity* wall2 = new Wall(Vector2{300,100},Vector2{32,150},LoadTexture("resources/wall.png"));
+
+    Entity* crazyguy = new Entity();
+    crazyguy->addComponent(new Transform2D(Vector2{32,32}, Vector2{32,32} ,0));
+    crazyguy->addComponent(new Renderable(LoadTexture("resources/enemy.png")));
+    crazyguy->addComponent(new Collider(Vector2{32,32}, Vector2{32,32}));
+    crazyguy->addComponent(new Velocity(Vector2{250,0}));
 
     // Create the RenderingSystem and add the entities to it
     Rendering renderingSystem;
     renderingSystem.addEntity(player);
     renderingSystem.addEntity(wall1);
     renderingSystem.addEntity(wall2);
+    renderingSystem.addEntity(crazyguy);
 
     Input inputSystem;
     inputSystem.addEntity(player);
@@ -45,6 +52,7 @@ int main() {
     physicsSystem.addEntity(player);
     physicsSystem.addEntity(wall1);
     physicsSystem.addEntity(wall2);
+    physicsSystem.addEntity(crazyguy);
 
     // Run the game loop
     while (!WindowShouldClose()) {
