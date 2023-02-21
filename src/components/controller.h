@@ -6,9 +6,13 @@
 
 class Controller : public Component {
 public:
-    float moveSpeed;
+    bool grounded;
+    float coyote;
 
-    Controller(float moveSpeed_) : moveSpeed(moveSpeed_) {}
+    float walkSpeed;
+    float jumpHeight;
+
+    Controller(float walkSpeed_, float jumpHeight_) : walkSpeed(walkSpeed_), jumpHeight(jumpHeight_) {}
 };
 
 #endif

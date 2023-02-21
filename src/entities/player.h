@@ -15,7 +15,7 @@ class Player : public Entity {
             addComponent(new Transform2D(pos, size ,0));
             addComponent(new Renderable(texture));
             addComponent(new Collider(pos, size));
-            addComponent(new Controller(25.0f));
+            addComponent(new Controller(25.0f,250.0f));
             addComponent(new Velocity(Vector2{0,0}));
         };
 };

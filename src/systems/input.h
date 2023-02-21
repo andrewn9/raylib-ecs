@@ -30,22 +30,18 @@ public:
 
             Vector2 moveVector = Vector2{0,0};
 
-            if(IsKeyDown(KEY_UP))
-                moveVector.y--;
-            if(IsKeyDown(KEY_DOWN))
-                moveVector.y++;
+            if(IsKeyDown(KEY_UP) && controller->grounded)
+                moveVector.y-=controller->jumpHeight;
             if(IsKeyDown(KEY_LEFT))
-                moveVector.x--;
+                moveVector.x-=controller->walkSpeed;
             if(IsKeyDown(KEY_RIGHT))
-                moveVector.x++;
+                moveVector.x+=controller->walkSpeed;
 
             if(Vector2Length(moveVector) == 0)
                 continue;
 
-            Vector2 normalVector = Vector2Normalize(moveVector);
-            normalVector = Vector2Scale(normalVector,controller->moveSpeed);
-            //printf("VELOCITXE%f, VELOCITYY%f\n\n", velocity->velocity.x, velocity->velocity.y);
-            velocity->velocity = Vector2Add(velocity->velocity,normalVector);
+            printf("x:%fy:%f\n\n",moveVector.x,moveVector.y);
+            velocity->velocity = Vector2Add(velocity->velocity,moveVector);
             
         }
     }

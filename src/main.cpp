@@ -11,7 +11,6 @@
 #include "components/renderable.h"
 #include "components/transform2D.h"
 #include "components/velocity.h"
-#include "components/scrollingcamera.h"
 
 #include "systems/input.h"
 #include "systems/physics.h"

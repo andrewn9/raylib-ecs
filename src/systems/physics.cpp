@@ -7,6 +7,10 @@ void Physics::update(float deltaTime){
         Transform2D* transformA = getComponent<Transform2D>(entityA);
         Velocity* velocityA = getComponent<Velocity>(entityA);
         Collider* colliderA = getComponent<Collider>(entityA);
+        Controller* controllerA = getComponent<Controller>(entityA);
+
+        if(controllerA)
+            controllerA->grounded = false;
 
         // Skip entity if mising
         if (!transformA || !velocityA)
@@ -23,7 +27,7 @@ void Physics::update(float deltaTime){
             // Get components for the entity checking against
             Transform2D* transformB = getComponent<Transform2D>(entityB);
             Collider* colliderB = getComponent<Collider>(entityB);
-    
+
             // Skip if entity is the same or missing components
             if((entityA == entityB)||!transformB || !colliderB)
                     continue;
@@ -85,7 +89,14 @@ void Physics::update(float deltaTime){
                                 normal = Vector2{ 0, 1};
                             penetration = y_overlap;
                         }
-                        // if normal.y > 1 then grounded
+
+                        if(normal.y > 0 && getComponent<Controller>(entityA)){
+                            getComponent<Controller>(entityA)->grounded = true;
+                        }
+                        else if(normal.y < 0 && getComponent<Controller>(entityB)){
+                            getComponent<Controller>(entityB)->grounded = true;
+                        }
+
                         resolveCollision(entityA,entityB, normal, penetration, n);
                     }
                     
@@ -94,8 +105,8 @@ void Physics::update(float deltaTime){
         }
         transformA->position = Vector2Add(transformA->position,Vector2Scale(velocityA->velocity,deltaTime));
         colliderA->position = transformA->position;
-        velocityA->velocity.x = velocityA->velocity.x*0.99;
-        velocityA->velocity.y = velocityA->velocity.y + 5.0;
+        velocityA->velocity.x = velocityA->velocity.x * DAMPENING;
+        velocityA->velocity.y = velocityA->velocity.y + GRAVITY;
     }
 }
 void Physics::resolveCollision(Entity* a, Entity*b, Vector2 normal, float penetration, Vector2 n)
@@ -161,23 +172,8 @@ void Physics::resolveCollision(Entity* a, Entity*b, Vector2 normal, float penetr
         colliderA->position = Vector2Add(colliderA->position,Vector2Scale(normal,-penetration*bMass/totalMass));
     }
 
-
-    
-    // colliderA->position = Vector2Add(colliderA->position,Vector2Scale(normal,-penetration/2));
     transformA->position = colliderA->position;
-
-    // colliderB->position = Vector2Add(colliderB->position,Vector2Scale(normal,penetration/2));
     transformB->position = colliderB->position;
-
-    // Vector2 correction = Vector2Scale(n, (fmaxf(penetration - SLOP, 0.0f) / (a_invMass + b_invMass)) * PEN_REDUX);
-    // transformA->position =  Vector2Subtract(colliderA->position, Vector2Scale(correction, a_invMass));
-    // transformB->position =  Vector2Add(colliderB->position, Vector2Scale(correction, b_invMass));
-    // colliderA->position = transformA->position;
-    // colliderB->position = transformB->position;
-
-    // printf("id:%d\n",a->id);
-    // printf("da%f, da%f\n", da.x, da.y);
-    // printf("vela%f, vela%f\n\n", velocityA.x, velocityA.y);
 }
 
 bool Physics::AABB(Collider* colliderA, Collider* colliderB)
