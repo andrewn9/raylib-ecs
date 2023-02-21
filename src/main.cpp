@@ -11,6 +11,7 @@
 #include "components/renderable.h"
 #include "components/transform2D.h"
 #include "components/velocity.h"
+#include "components/scrollingcamera.h"
 
 #include "systems/input.h"
 #include "systems/physics.h"
@@ -28,11 +29,12 @@ int main() {
     SetTargetFPS(MAX_FPS);
 
     // Create the entities
-    Entity* player = new Player(Vector2{0,0},Vector2{32,32},LoadTexture("resources/player.png"));
-    Entity* wall1 = new Wall(Vector2{250,250},Vector2{150,150},LoadTexture("resources/wall.png"));
-    Entity* wall2 = new Wall(Vector2{300,100},Vector2{32,150},LoadTexture("resources/wall.png"));
+    Entity* player = new Player(Vector2{0,0},Vector2{32,32},LoadTexture("resources/player.png"),1);
 
-    Entity* crazyguy = new Entity();
+    Entity* wall1 = new Wall(Vector2{250,250},Vector2{WIN_WIDTH,150},LoadTexture("resources/wall.png"),2);
+    Entity* wall2 = new Wall(Vector2{300,100},Vector2{32,150},LoadTexture("resources/wall.png"),3);
+
+    Entity* crazyguy = new Entity(4);
     crazyguy->addComponent(new Transform2D(Vector2{32,32}, Vector2{32,32} ,0));
     crazyguy->addComponent(new Renderable(LoadTexture("resources/enemy.png")));
     crazyguy->addComponent(new Collider(Vector2{32,32}, Vector2{32,32}));
@@ -40,6 +42,7 @@ int main() {
 
     // Create the RenderingSystem and add the entities to it
     Rendering renderingSystem;
+    renderingSystem.cameraFocus = player;
     renderingSystem.addEntity(player);
     renderingSystem.addEntity(wall1);
     renderingSystem.addEntity(wall2);
@@ -58,8 +61,8 @@ int main() {
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
         // Update the systems
-        inputSystem.update(deltaTime);
         physicsSystem.update(deltaTime);
+        inputSystem.update(deltaTime);
         renderingSystem.update(deltaTime);
     }
 

@@ -85,6 +85,7 @@ void Physics::update(float deltaTime){
                                 normal = Vector2{ 0, 1};
                             penetration = y_overlap;
                         }
+                        // if normal.y > 1 then grounded
                         resolveCollision(entityA,entityB, normal, penetration, n);
                     }
                     
@@ -93,7 +94,8 @@ void Physics::update(float deltaTime){
         }
         transformA->position = Vector2Add(transformA->position,Vector2Scale(velocityA->velocity,deltaTime));
         colliderA->position = transformA->position;
-        velocityA->velocity = Vector2Scale(velocityA->velocity, 0.8);
+        velocityA->velocity.x = velocityA->velocity.x*0.99;
+        velocityA->velocity.y = velocityA->velocity.y + 5.0;
     }
 }
 void Physics::resolveCollision(Entity* a, Entity*b, Vector2 normal, float penetration, Vector2 n)
@@ -116,7 +118,6 @@ void Physics::resolveCollision(Entity* a, Entity*b, Vector2 normal, float penetr
     // // Do not resolve if velocities are separating 
     if(velAlongNormal>0)
         return;
-    
 
     // // Calculate restitution 
     float e = std::min(colliderA->restitution,colliderB->restitution);
@@ -137,20 +138,46 @@ void Physics::resolveCollision(Entity* a, Entity*b, Vector2 normal, float penetr
     Vector2 da = Vector2Scale(impulse,1/aMass);
     Vector2 db = Vector2Scale(impulse,1/bMass);
 
-    printf("x%f, y%f", normal.x, normal.y);
     // Only affect the entity if it has mass, ie. not a wall
     if(a_invMass > 0)
-        velocityA = Vector2Subtract(velocityA, da);
+        getComponent<Velocity>(a)->velocity = Vector2Subtract(velocityA, da);
+        //velocityA = Vector2Subtract(velocityA, da);
     if(b_invMass > 0)
-        velocityB = Vector2Add(velocityB, db);
+        getComponent<Velocity>(b)->velocity = Vector2Add(velocityB, db);
+        //velocityB = Vector2Add(velocityB, db);
+
+    if(aMass == 0)
+    {
+        colliderB->position = Vector2Add(colliderB->position,Vector2Scale(normal,penetration));
+    }
+    else if(bMass == 0)
+    {
+        colliderA->position = Vector2Add(colliderA->position,Vector2Scale(normal,-penetration));
+    }
+    else
+    {
+        float totalMass = aMass + bMass;
+        colliderB->position = Vector2Add(colliderB->position,Vector2Scale(normal,penetration*aMass/totalMass));
+        colliderA->position = Vector2Add(colliderA->position,Vector2Scale(normal,-penetration*bMass/totalMass));
+    }
+
 
     
-    colliderA->position = Vector2Add(colliderA->position,Vector2Scale(normal,-penetration/2));
+    // colliderA->position = Vector2Add(colliderA->position,Vector2Scale(normal,-penetration/2));
     transformA->position = colliderA->position;
 
-    colliderB->position = Vector2Add(colliderB->position,Vector2Scale(normal,penetration/2));
+    // colliderB->position = Vector2Add(colliderB->position,Vector2Scale(normal,penetration/2));
     transformB->position = colliderB->position;
 
+    // Vector2 correction = Vector2Scale(n, (fmaxf(penetration - SLOP, 0.0f) / (a_invMass + b_invMass)) * PEN_REDUX);
+    // transformA->position =  Vector2Subtract(colliderA->position, Vector2Scale(correction, a_invMass));
+    // transformB->position =  Vector2Add(colliderB->position, Vector2Scale(correction, b_invMass));
+    // colliderA->position = transformA->position;
+    // colliderB->position = transformB->position;
+
+    // printf("id:%d\n",a->id);
+    // printf("da%f, da%f\n", da.x, da.y);
+    // printf("vela%f, vela%f\n\n", velocityA.x, velocityA.y);
 }
 
 bool Physics::AABB(Collider* colliderA, Collider* colliderB)

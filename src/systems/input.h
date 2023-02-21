@@ -44,7 +44,9 @@ public:
 
             Vector2 normalVector = Vector2Normalize(moveVector);
             normalVector = Vector2Scale(normalVector,controller->moveSpeed);
+            //printf("VELOCITXE%f, VELOCITYY%f\n\n", velocity->velocity.x, velocity->velocity.y);
             velocity->velocity = Vector2Add(velocity->velocity,normalVector);
+            
         }
     }
 };
