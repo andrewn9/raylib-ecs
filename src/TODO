@@ -1,0 +1,20 @@
+Tilemap class :
+    Holds a tilemap to be organized and read from
+
+Texture.h:
+    Loads and stores textures for re-use, instead of constantly re-loading a textures
+
+Error.h:
+    Error output formatting
+
+Scene loading?
+
+Trigger components (Hitboxes, collectibles, etc)
+
+Generalize input system and controllers
+
+Parallax background
+
+UI System
+
+Slopes.....?
