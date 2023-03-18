@@ -40,7 +40,6 @@ public:
             if(Vector2Length(moveVector) == 0)
                 continue;
 
-            printf("x:%fy:%f\n\n",moveVector.x,moveVector.y);
             velocity->velocity = Vector2Add(velocity->velocity,moveVector);
             
         }
